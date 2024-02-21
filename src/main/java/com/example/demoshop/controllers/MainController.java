@@ -1,19 +1,34 @@
 package com.example.demoshop.controllers;
 
+import com.example.demoshop.service.SessionObjectHolder;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.UUID;
+
 @Controller
 public class MainController {
+    private final SessionObjectHolder sessionObjectHolder;
+
+    public MainController(SessionObjectHolder sessionObjectHolder) {
+        this.sessionObjectHolder = sessionObjectHolder;
+    }
 
     @RequestMapping({"", "/"})
-    public String index(){
+    public String index(Model model, HttpSession httpSession) {
+        if (httpSession.getAttribute("myId") == null) {
+            String uuid = UUID.randomUUID().toString();
+            httpSession.setAttribute("myID", uuid);
+            System.out.println("Generated UUID -> " + uuid);
+        }
+        model.addAttribute("amountClicks", sessionObjectHolder.getAmountClicks());
         return "index";
     }
 
     @RequestMapping("/login")
-    public String login(){
+    public String login() {
         return "login";
     }
 

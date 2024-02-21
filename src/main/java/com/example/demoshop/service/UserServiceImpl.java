@@ -4,6 +4,7 @@ import com.example.demoshop.dao.UserReposirory;
 import com.example.demoshop.domain.Role;
 import com.example.demoshop.domain.User;
 import com.example.demoshop.dto.UserDTO;
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,10 +44,44 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void save(User user) {
+        userReposirory.save(user);
+    }
+
+    @Override
     public List<UserDTO> getAll() {
         return userReposirory.findAll().stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public User findByName(String name) {
+        return userReposirory.findFirstByName(name);
+    }
+
+    @Override
+    @Transactional
+    public void updateProfile(UserDTO dto) {
+        User savedUser = userReposirory.findFirstByName(dto.getUsername());
+        if (savedUser == null) {
+            throw new RuntimeException("User not  found by name" + dto.getUsername());
+        }
+
+        boolean isChanged = false;
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            savedUser.setPassword(passwordEncoder.encode(dto.getPassword()));
+            isChanged = true;
+        }
+
+        if (!Objects.equals(dto.getEmail(), savedUser.getEmail())) {
+            savedUser.setEmail(dto.getEmail());
+            isChanged = true;
+        }
+
+        if (isChanged) {
+            userReposirory.save(savedUser);
+        }
     }
 
     @Override

@@ -2,12 +2,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+#      ddl-auto: create-drop
     show-sql: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/shop
-    username: postgres
-    password: 1825jvsh
+    username: demoshop
+    password: pass
   flyway:
     baseline-on-migrate: true
 
