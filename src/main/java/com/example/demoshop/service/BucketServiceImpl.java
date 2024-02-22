@@ -41,7 +41,7 @@ public class BucketServiceImpl implements BucketService {
     private List<Product> getCollectRefProductsByIds(List<Long> productIds) {
         return productIds.stream()
                 // getOne вытаскиваем ссылку на объект, findById - вытаскиваем сам объект
-                .map(productRepository::getOne)
+                .map(productRepository :: getOne)
                 .collect(Collectors.toList());
     }
 

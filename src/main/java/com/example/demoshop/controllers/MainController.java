@@ -18,12 +18,13 @@ public class MainController {
 
     @RequestMapping({"", "/"})
     public String index(Model model, HttpSession httpSession) {
-        if (httpSession.getAttribute("myId") == null) {
+        model.addAttribute("amountClicks", sessionObjectHolder.getAmountClicks());
+        if (httpSession.getAttribute("myID") == null) {
             String uuid = UUID.randomUUID().toString();
             httpSession.setAttribute("myID", uuid);
             System.out.println("Generated UUID -> " + uuid);
         }
-        model.addAttribute("amountClicks", sessionObjectHolder.getAmountClicks());
+        model.addAttribute("uuid", httpSession.getAttribute("myID"));
         return "index";
     }
 
